@@ -14,6 +14,7 @@ def search_semantic_scholar(query):
         response = requests.get(url, params=params, timeout=15)
 
         if response.status_code != 200:
+            print("Semantic Scholar unavailable:", response.status_code)
             return []
 
         data = response.json()
@@ -31,7 +32,8 @@ def search_semantic_scholar(query):
 
         return results
 
-    except Exception:
+    except Exception as e:
+        print("Semantic Scholar error:", e)
         return []
 
 
@@ -47,6 +49,7 @@ def search_openalex(query):
         response = requests.get(url, params=params, timeout=15)
 
         if response.status_code != 200:
+            print("OpenAlex unavailable:", response.status_code)
             return []
 
         data = response.json()
@@ -54,6 +57,7 @@ def search_openalex(query):
         results = []
 
         for paper in data.get("results", []):
+
             abstract = ""
 
             # OpenAlex stores abstracts as an inverted index
@@ -82,7 +86,8 @@ def search_openalex(query):
 
         return results
 
-    except Exception:
+    except Exception as e:
+        print("OpenAlex error:", e)
         return []
 
 
@@ -91,13 +96,23 @@ def search_github(query):
 
     params = {
         "q": query,
-        "per_page": 5
+        "per_page": 5,
+        "sort": "stars",
+        "order": "desc"
     }
 
     try:
-        response = requests.get(url, params=params, timeout=15)
+        response = requests.get(
+            url,
+            params=params,
+            timeout=15,
+            headers={
+                "Accept": "application/vnd.github+json"
+            }
+        )
 
         if response.status_code != 200:
+            print("GitHub unavailable:", response.status_code)
             return []
 
         data = response.json()
@@ -115,22 +130,31 @@ def search_github(query):
 
         return results
 
-    except Exception:
+    except Exception as e:
+        print("GitHub error:", e)
         return []
 
 
 def search_all(query):
     results = []
 
-    # Search research papers
+    # -------------------------------------------------
+    # 1. Research papers
+    # -------------------------------------------------
+
     results.extend(search_semantic_scholar(query))
     results.extend(search_openalex(query))
 
-    # Search GitHub using the full idea
+    # -------------------------------------------------
+    # 2. GitHub search
+    # -------------------------------------------------
+
     github_results = search_github(query)
 
-    # If no results, try a shorter query
+    # If full idea gives no GitHub results,
+    # use a shorter version.
     if not github_results:
+
         words = query.split()
 
         if len(words) > 6:
@@ -140,36 +164,60 @@ def search_all(query):
 
         github_results = search_github(short_query)
 
-    # If still no results, search using important keywords
+    # -------------------------------------------------
+    # 3. Keyword fallback
+    # -------------------------------------------------
+
     if not github_results:
 
-        keywords = [
-            "AI",
-            "artificial intelligence",
-            "machine learning",
-            "deep learning",
-            "waste",
-            "garbage",
-            "sorting",
-            "classification",
-            "detection",
-            "camera",
-            "smart",
-            "automation"
+        keyword_groups = [
+            ["waste", "garbage", "recycling"],
+            ["AI", "artificial intelligence", "machine learning"],
+            ["sorting", "classification", "detection"],
+            ["camera", "computer vision"]
         ]
-
-        found_keywords = []
 
         query_lower = query.lower()
 
-        for keyword in keywords:
-            if keyword.lower() in query_lower:
-                found_keywords.append(keyword)
+        selected = []
 
-        if found_keywords:
-            github_query = " ".join(found_keywords[:4])
+        for group in keyword_groups:
+
+            for keyword in group:
+
+                if keyword.lower() in query_lower:
+                    selected.append(keyword)
+                    break
+
+        if selected:
+
+            github_query = " ".join(selected[:4])
+
+            print("GitHub fallback query:", github_query)
+
             github_results = search_github(github_query)
 
+    # Add GitHub results
     results.extend(github_results)
 
-    return results
+    # -------------------------------------------------
+    # 4. Remove duplicate results
+    # -------------------------------------------------
+
+    unique_results = []
+    seen = set()
+
+    for result in results:
+
+        key = (
+            result.get("source"),
+            result.get("title")
+        )
+
+        if key not in seen:
+            seen.add(key)
+            unique_results.append(result)
+
+    print("Total search results:", len(unique_results))
+
+    return unique_results

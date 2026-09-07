@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IdeaScout | Analysis Results</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Idea<span>Scout</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">Check Another Idea</a>
+        </div>
+
+    </nav>
+
+
+    <!-- RESULTS -->
+
+    <main class="results-container">
+
+        <div class="results-header">
+
+            <div class="badge">
+                AI ANALYSIS COMPLETE
+            </div>
+
+            <h1>
+                Your Idea Analysis
+            </h1>
+
+            <p>
+                Here's what IdeaScout discovered about your idea.
+            </p>
+
+        </div>
+
+
+        <!-- IDEA -->
+
+        <div class="idea-summary">
+
+            <h3>
+                YOUR IDEA
+            </h3>
+
+            <p id="resultIdea">
+                Loading...
+            </p>
+
+        </div>
+
+
+        <!-- SCORE -->
+
+        <div class="score-section">
+
+            <div class="score-circle">
+
+                <div
+                    class="score-number"
+                    id="scoreNumber">
+                    --
+                </div>
+
+                <div class="score-label">
+                    / 100
+                </div>
+
+            </div>
+
+
+            <div class="score-info">
+
+                <h2 id="scoreTitle">
+                    Analyzing...
+                </h2>
+
+                <p id="scoreDescription">
+                    Calculating your idea's originality.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- MATCHES -->
+
+        <section class="results-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Similar Existing Work
+                </h2>
+
+                <p>
+                    Research papers and GitHub projects related to your idea.
+                </p>
+
+            </div>
+
+            <div id="matchesContainer">
+
+                <p>Loading matches...</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- GAPS -->
+
+        <section class="gap-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Potential Gaps
+                </h2>
+
+                <p>
+                    Areas where your idea could be differentiated.
+                </p>
+
+            </div>
+
+            <div
+                id="gapsContainer"
+                class="gap-card">
+
+                Loading gaps...
+
+            </div>
+
+        </section>
+
+
+        <!-- RECOMMENDATIONS -->
+
+        <section class="gap-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Recommendations
+                </h2>
+
+                <p>
+                    Ways to make your idea more distinctive.
+                </p>
+
+            </div>
+
+            <div id="recommendationsContainer">
+
+                Loading recommendations...
+
+            </div>
+
+        </section>
+
+
+        <!-- NEW IDEA -->
+
+        <section class="unique-section">
+
+            <h2>
+                Want to make your idea more unique?
+            </h2>
+
+            <p>
+                Use the insights above to improve your idea
+                and differentiate it from existing solutions.
+            </p>
+
+            <button onclick="window.location.href='index.html'">
+                CHECK ANOTHER IDEA →
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <div class="logo">
+            Idea<span>Scout</span>
+        </div>
+
+        <p>
+            AI-powered idea novelty checker
+        </p>
+
+    </footer>
+
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
